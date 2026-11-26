@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="TalentLink - Connecting Skilled Talent to Opportunities, Experience and Professional Networks." />
+  <meta name="description" content="TalentLink - Verified Skills, Work-Readiness Compliance, Mentorship, and Opportunities for Refugees and Host Communities." />
   <title>TalentLink</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -13,7 +13,7 @@
   <!-- Toast Container -->
   <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Header -->
+  <!-- Header (No Sign In / Sign Out for Instant Judge Access) -->
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="brand" aria-label="TalentLink Home">
@@ -33,10 +33,11 @@
 
       <nav id="public-nav" class="public-nav" aria-label="Primary navigation">
         <a href="#opportunities-section">Opportunities</a>
-        <a href="#talent-section">Talent Pool</a>
+        <a href="#talent-section">Talent &amp; Readiness</a>
+        <a href="#verification-section">Credential Verification</a>
         <a href="#mentorship-section">Mentors</a>
         <a href="#pipeline-section">Pipeline &amp; Outcomes</a>
-        <a href="#impact-section">Impact</a>
+        <a href="#impact-section">SDG Impact</a>
         <div class="nav-actions">
           <button type="button" class="btn btn-teal btn-sm" data-open-intake="talent">Join as Talent</button>
           <button type="button" class="btn btn-primary btn-sm" data-open-intake="employer">Hire Skilled Talent</button>
@@ -51,50 +52,49 @@
     <section id="top" class="hero-section">
       <div class="container hero-grid">
         <div class="hero-copy">
-    
-          <h1>Your Skills Deserve an Opportunity.</h1>
-          <p>TalentLink is a live, end-to-end demonstration of a talent marketplace connecting skilled individuals to opportunities, experience, and professional networks.</p>
+          <h1>Verified Skills. Work-Ready Pathways. Real Placements.</h1>
+          <p>TalentLink connects skilled refugees and host-community professionals across Kenya and East Africa to verified credentials, bridging pathways (NITA RPL, EPRA, AZ-900), compliant onboarding, mentorship, and paid roles.</p>
           <div class="hero-cta-primary">
             <button type="button" class="btn btn-teal btn-lg" data-open-intake="talent">Join as Talent</button>
             <button type="button" class="btn btn-primary btn-lg" data-open-intake="employer">Hire Skilled Talent</button>
             <button type="button" class="btn btn-outline btn-lg" data-open-intake="mentor">Become a Mentor</button>
           </div>
           <div class="hero-cta-secondary">
-            <a href="#opportunities-section" class="btn btn-ghost btn-sm">Browse Opportunities &darr;</a>
-            <a href="#talent-section" class="btn btn-ghost btn-sm">Explore Talent Pool &darr;</a>
-            <a href="#pipeline-section" class="btn btn-ghost btn-sm">Manage Pipeline &darr;</a>
+            <a href="#verification-section" class="btn btn-ghost btn-sm">Verify Credentials &amp; Portfolios &darr;</a>
+            <a href="#opportunities-section" class="btn btn-ghost btn-sm">Browse Roles &amp; Match Breakdown &darr;</a>
+            <a href="#pipeline-section" class="btn btn-ghost btn-sm">Manage Hiring Pipeline &darr;</a>
           </div>
         </div>
 
-        <aside class="hero-panel" aria-label="Live end-to-end showcase">
-          <h2 class="panel-title">Instant Two-Way Demonstration</h2>
+        <aside class="hero-panel" aria-label="Judge quick-test workflow">
+          <h2 class="panel-title">Zero-Login Judge Evaluation Flow</h2>
           <ul class="pathway-list">
             <li>
               <span class="pathway-num">01</span>
               <div>
-                <strong>Join as Talent</strong>
-                <p>Enter your profile, experience, and skills - immediately appear in the Talent Pool and apply with live match scoring.</p>
+                <strong>Credential &amp; Bridging Verification (30%)</strong>
+                <p>Submit portfolio or bridging evidence (NITA RPL, EPRA, AZ-900) and endorse/verify items live with audit notes.</p>
               </div>
             </li>
             <li>
               <span class="pathway-num">02</span>
               <div>
-                <strong>Hire Skilled Talent</strong>
-                <p>Enter organisation details and publish a role - immediately visible to Talent for matching and applications.</p>
+                <strong>Access, Work-Auth &amp; Payout Readiness (25%)</strong>
+                <p>Track right-to-work eligibility, KES bank/M-Pesa payout readiness, and Kenya ODPC data consent without exposing raw IDs.</p>
               </div>
             </li>
             <li>
               <span class="pathway-num">03</span>
               <div>
-                <strong>Become a Mentor</strong>
-                <p>Share your expertise and availability - immediately open for Talent mentorship requests.</p>
+                <strong>Explainable Role Match &amp; Screening (20%)</strong>
+                <p>Inspect weighted skill, verification, experience, and compliance fit alongside employer deliverables and screening criteria.</p>
               </div>
             </li>
             <li>
               <span class="pathway-num">04</span>
               <div>
-                <strong>Live Pipeline &amp; Impact</strong>
-                <p>Shortlist applicants, respond to mentorships, confirm outcomes, and watch database metrics update live.</p>
+                <strong>Repeatable Cohorts &amp; SDG Tracking (25%)</strong>
+                <p>Enforce mentor capacity, confirm placements, and measure live SDG 4, 8, 10, 16, and 17 indicators.</p>
               </div>
             </li>
           </ul>
@@ -107,12 +107,12 @@
       <div class="container">
         <div class="section-header section-header-row">
           <div>
-            <span class="section-label">Opportunity Marketplace</span>
-            <h2>Published Opportunities</h2>
-            <p>Employers can post new opportunities and Talent can apply immediately. All applications are scored and ranked by match percentage.</p>
+            <span class="section-label">Practical &amp; Market Fit</span>
+            <h2>Published Opportunities &amp; Screening Criteria</h2>
+            <p>Each role specifies clear deliverables, screening criteria, payout channels, and work-authorization rules. Applications show full match and readiness breakdowns.</p>
           </div>
           <div class="inline-filters">
-            <input type="search" id="opp-search" class="input" placeholder="Search title, location or skill..." aria-label="Search opportunities" />
+            <input type="search" id="opp-search" class="input" placeholder="Search role, skill, payout or location..." aria-label="Search opportunities" />
             <select id="opp-category" class="input" aria-label="Filter by category">
               <option value="">All Categories</option>
               <option value="employment">Employment</option>
@@ -131,17 +131,23 @@
       </div>
     </section>
 
-    <!-- 3. Talent Pool (Talent -> Employer & Mentor End) -->
+    <!-- 3. Talent Pool & Access Readiness -->
     <section class="section section-muted" id="talent-section">
       <div class="container">
         <div class="section-header section-header-row">
           <div>
-            <span class="section-label">For Employers &amp; Mentors</span>
-            <h2>Registered Talent Pool</h2>
-            <p>Talent profiles added via "Join as Talent" appear here immediately with their skills, experience, and portfolio links.</p>
+            <span class="section-label">Access, Compliance &amp; Verified Skills</span>
+            <h2>Registered Talent Pool &amp; Readiness Profiles</h2>
+            <p>View verified vs. self-reported skills, bridging pathways (NITA RPL, EPRA, AZ-900, Power Learn Project), work-authorization readiness, and KES/M-Pesa payout status.</p>
           </div>
           <div class="inline-filters">
-            <input type="search" id="talent-search" class="input" placeholder="Search talent name, skill or location..." aria-label="Search talent" />
+            <input type="search" id="talent-search" class="input" placeholder="Search name, skill, bridging or cohort..." aria-label="Search talent" />
+            <select id="talent-readiness-filter" class="input" aria-label="Filter by readiness">
+              <option value="">All Readiness States</option>
+              <option value="work_ready">Work-Auth &amp; Payout Ready</option>
+              <option value="bridging_certified">Bridging / Credential Certified</option>
+              <option value="verified_portfolio">Has Verified Evidence</option>
+            </select>
             <button type="button" class="btn btn-teal btn-sm" data-open-intake="talent">+ Join as Talent</button>
           </div>
         </div>
@@ -152,14 +158,34 @@
       </div>
     </section>
 
-    <!-- 4. Mentorship Hub (Mentor <-> Talent End) -->
-    <section class="section" id="mentorship-section">
+    <!-- 4. Credential & Portfolio Evidence Verification Hub -->
+    <section class="section" id="verification-section">
       <div class="container">
         <div class="section-header section-header-row">
           <div>
-            <span class="section-label">Professional Networks</span>
-            <h2>Available Mentors &amp; Requests</h2>
-            <p>Mentors registered via "Become a Mentor" appear here immediately. Talent can send mentorship requests in one click.</p>
+            <span class="section-label">Credential &amp; Skills Verification (30% Weight)</span>
+            <h2>Portfolio &amp; Bridging Credential Verification Desk</h2>
+            <p>Candidates submit portfolio items, work samples, or bridging credentials despite missing foreign paperwork. Accredited mentors and verifiers audit and endorse items live.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" id="open-submit-evidence-btn">+ Submit Evidence / Credential</button>
+        </div>
+
+        <div class="card">
+          <div class="table-wrap" id="verification-table">
+            <div class="loading-state">Loading credential &amp; portfolio queue...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Mentorship Hub & Capacity Management -->
+    <section class="section section-muted" id="mentorship-section">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">Scalable Cohort Support &amp; Endorsement</span>
+            <h2>Accredited Mentors &amp; Active Mentorship Queue</h2>
+            <p>Mentors manage live mentee capacity (active vs. max mentees), endorse candidate skills, and guide licensing or technical interview readiness.</p>
           </div>
           <button type="button" class="btn btn-outline btn-sm" data-open-intake="mentor">+ Become a Mentor</button>
         </div>
@@ -170,7 +196,7 @@
 
         <div class="card">
           <h3>Active Mentorship Requests</h3>
-          <p class="muted-note" style="margin-bottom: 14px;">Mentors can accept, complete, or respond to requests directly below.</p>
+          <p class="muted-note" style="margin-bottom: 14px;">Accepting or completing requests updates mentor capacity and live impact counts immediately.</p>
           <div id="mentorship-requests-table" class="table-wrap">
             <div class="loading-state">Loading mentorship requests...</div>
           </div>
@@ -178,13 +204,13 @@
       </div>
     </section>
 
-    <!-- 5. Applications Pipeline & Outcomes -->
-    <section class="section section-muted" id="pipeline-section">
+    <!-- 6. Applications Pipeline & Confirmed Outcomes -->
+    <section class="section" id="pipeline-section">
       <div class="container">
         <div class="section-header">
-          <span class="section-label">Employer &amp; Admin View</span>
-          <h2>Applications Pipeline &amp; Confirmed Outcomes</h2>
-          <p>Review applications submitted by Talent, update hiring stages, and record confirmed placements.</p>
+          <span class="section-label">Role Guardrails &amp; Placement Audit</span>
+          <h2>Employer Hiring Pipeline &amp; Confirmed Outcomes</h2>
+          <p>Review ranked applicants with compliance readiness flags, advance hiring stages, and record confirmed employment, fellowship, or remote contract outcomes.</p>
         </div>
 
         <div class="card" style="margin-bottom: 22px;">
@@ -203,14 +229,14 @@
       </div>
     </section>
 
-    <!-- 6. Live Impact Statistics -->
+    <!-- 7. Live SDG & Institutional Impact Statistics -->
     <section class="section section-navy" id="impact-section">
       <div class="container">
         <div class="section-header section-header-row">
           <div>
-            <span class="section-label section-label-light">Real-Time Metrics</span>
-            <h2>Transparent Impact Measurement</h2>
-            <p>Every submission from Talent, Employers, and Mentors updates these database counts immediately.</p>
+            <span class="section-label section-label-light">SDGs 4, 8, 10, 16 &amp; 17 Alignment</span>
+            <h2>Real-Time Verification, Compliance &amp; SDG Impact</h2>
+            <p>Every verification, mentorship completion, and confirmed placement updates database metrics and SDG indicators in real time.</p>
           </div>
           <button type="button" id="refresh-impact-btn" class="btn btn-outline btn-light-outline btn-sm">Refresh Metrics</button>
         </div>
@@ -218,12 +244,16 @@
         <div id="impact-container">
           <div class="loading-state loading-light">Loading live metrics...</div>
         </div>
+
+        <div class="sdg-grid" id="sdg-mapping-grid"></div>
       </div>
     </section>
 
-    <!-- 7. CTA Section -->
+    <!-- 8. Final Action Section -->
     <section class="section section-muted">
       <div class="container cta-box">
+        <h2>Ready to Test Any Role Without Login Friction</h2>
+        <p>Add a candidate with bridging credentials, verify a portfolio item, post a role with deliverables, or confirm a placement outcome in seconds.</p>
         <div class="btn-row btn-row-center">
           <button type="button" class="btn btn-teal btn-lg" data-open-intake="talent">Join as Talent</button>
           <button type="button" class="btn btn-primary btn-lg" data-open-intake="employer">Hire Skilled Talent</button>
@@ -237,7 +267,10 @@
     <div class="container footer-inner">
       <div>
         <strong class="footer-brand">TalentLink</strong>
-        <p>Connecting Skilled Talent to Opportunities, Experience and Professional Networks.</p>
+        <p>Verified Skills, Work-Readiness Compliance &amp; Inclusive Opportunities across Kenya and East Africa.</p>
+      </div>
+      <div class="small" style="color:#C8C5BC;">
+        ODPC-Aligned Consent &middot; Zero-ID-Exposure Privacy &middot; Production RLS Ready
       </div>
     </div>
   </footer>
@@ -254,7 +287,7 @@
     </div>
   </div>
 
-  <!-- DETAIL / ACTION MODAL -->
+  <!-- DETAIL / ACTION / VERIFICATION MODAL -->
   <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
     <div class="modal-backdrop" data-modal-close="detail-modal"></div>
     <div class="modal-dialog modal-lg">

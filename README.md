@@ -1,58 +1,69 @@
-# TalentLink 
+# TalentLink
 
-TalentLink is a skills-first talent marketplace connecting skilled refugees and host-community professionals in Kenya and East Africa to formal employment, internships, fellowships, apprenticeships, remote work, and industry mentorship.
+TalentLink is a skills-first talent marketplace connecting skilled refugees and host-community professionals across Kenya and East Africa to verified credentials, bridging pathways, compliant work readiness, industry mentorship, and paid opportunities.
 
 ## What TalentLink Does
 
-TalentLink brings three groups together in one shared platform:
+TalentLink brings three groups together in a zero-login, shared platform designed for immediate onboarding and live end-to-end workflows:
 
-* **Talent:** Professionals and emerging talent create profiles showcasing their experience, sector, preferred work arrangement (remote, hybrid, or onsite), languages, portfolio links, and proficiency-rated skills.
+* **Talent:** Professionals and emerging talent create profiles showcasing their cohort, bridging pathways (such as NITA Recognition of Prior Learning, EPRA T2, Microsoft AZ-900, and Power Learn Project), work-authorization readiness, KES bank/M-Pesa payout readiness, portfolio links, and verification-badged skills.
+* **Employers & Institutional Partners:** Private employers, social enterprises, agencies, and NGOs publish opportunities with explicit deliverables, practical screening criteria, payout channels, and work-authorization rules, then review ranked applicants and confirm placement outcomes.
+* **Mentors & Credential Verifiers:** Industry practitioners share their expertise, weekly availability, and active mentee capacity so talent can request guidance, get skills endorsed, and have portfolio or bridging evidence verified.
 
-* **Employers:** Organisations publish opportunities across five categories (Employment, Internship, Fellowship, Apprenticeship, and Remote Work), review ranked applicants, manage hiring stages, and confirm placement outcomes.
+## Core Platform Capabilities
 
-* **Mentors:** Industry professionals share their expertise, weekly availability, and mentee capacity so talent can request targeted career and portfolio guidance.
+### 1. Credential & Bridging Verification Desk
+Candidates without traditional diplomas or accessible home-country paperwork can submit project portfolios, work samples, Recognition of Prior Learning (RPL) logs, or bridging credentials (`project_portfolio`, `bridging_credential`, `rpl_assessment`, `work_sample`). Accredited mentors and verifiers audit submissions in real time, updating status (`submitted`, `under_review`, `verified`, `rejected`) with audit notes and upgrading candidate skills from `Self-Reported` to `Portfolio Backed`, `Mentor Endorsed`, or `Credential Verified`.
 
-## How the Platform Works
+### 2. Access, Work-Authorization & Payout Readiness
+Talent and employer workflows address onboarding and compliance bottlenecks up front while protecting personal privacy:
+* **Work-Authorization & Eligibility Readiness:** Captures structured readiness states (`Refugee ID / Work Permit Ready`, `Kenyan National ID Ready`, `EAC Citizen Work Eligible`, `Remote Independent Contractor Eligible`, or `Work-Auth Onboarding Support Needed`) without exposing raw national or refugee ID numbers.
+* **Financial & Payout Readiness:** Tracks KES Bank Transfer, M-Pesa mobile money, and international remote payout readiness alongside employer payout channels.
+* **Kenya ODPC Data Privacy Consent:** Captures explicit data-processing consent on talent registration.
 
-### 1. Opportunity Marketplace
+### 3. Opportunity Marketplace & Practical Screening
+Employers publish opportunities across five categories (**Employment**, **Internship**, **Fellowship**, **Apprenticeship**, and **Remote Work**) with compensation in Kenya Shillings (KES), expected deliverables, and practical screening criteria.
 
-Employers publish roles with required skills, location, work arrangement, duration, and compensation in Kenya Shillings (KES). Talent can search and filter opportunities by keyword or category and apply directly.
+### 4. Explainable Match & Readiness Scoring
+Every application and role recommendation is scored from 0% to 100% across four weighted dimensions, complete with a transparent factor breakdown and missing-skill summary:
 
-### 2. Talent Pool & Role Matching
+| Criterion | Weight | How It Works |
+| :--- | :---: | :--- |
+| **Skills & Proficiency** | **50%** | Evaluates candidate skills against required and optional role skills, weighted by proficiency (`beginner` to `expert`) and verification source. |
+| **Experience & Sector Fit** | **20%** | Compares candidate sector alignment and years of experience against the role's sector and minimum experience requirement. |
+| **Verification & Bridging** | **15%** | Rewards verified portfolio items, work samples, and certified bridging pathways. |
+| **Work-Auth & Payout Fit** | **15%** | Evaluates work-authorization readiness, payout readiness, and remote/hybrid/onsite arrangement alignment. |
 
-Registered talent profiles appear in the Talent Pool with their skills, experience, and verified portfolio items. Employers and talent can run instant role matching to view the top five opportunities ranked by compatibility.
+### 5. Mentorship Hub with Capacity Guardrails
+Talent can send mentorship requests with targeted goals, while mentors manage active mentee slots (`active / max_mentees`) so capacity limits are respected automatically.
 
-### 3. Skill-Match Scoring
+### 6. Real-Time Pipeline & SDG Impact Measurement
+Employers advance candidates across hiring stages (`submitted`, `under_review`, `shortlisted`, `interview`, `accepted`, `rejected`) and confirm placement outcomes. Live metrics map directly to **UN Sustainable Development Goals 4, 8, 10, 16, and 17**.
 
-Every application and role recommendation is scored from 0% to 100% across four weighted criteria:
+## Repository & Database Structure
 
-| Criterion | Weight | How It Works | 
-| ----- | ----- | ----- | 
-| Skills & Proficiency | 55% | Evaluates candidate skills against required and optional role skills, weighted by proficiency level. | 
-| Sector Alignment | 20% | Measures alignment between the candidate's sector background and the opportunity's sector. | 
-| Experience Fit | 15% | Compares candidate years of experience against the role's minimum experience requirement. | 
-| Work Arrangement | 10% | Matches remote, hybrid, and onsite preferences between candidate and employer. | 
+* `index.html` — Single-page application interface covering Opportunities, Talent & Readiness Pool, Credential Verification Desk, Mentors, Hiring Pipeline, and SDG Impact Dashboard.
+* `styles.css` — Responsive design system with verification badges, readiness strips, match factor grids, and accessible modals.
+* `config.js` — Supabase client configuration with automatic detection for live backend or local fallback mode.
+* `app.js` — Client-side state management, explainable match engine, verification/endorsement workflows, and live Supabase/local persistence.
+* `schema.sql` — PostgreSQL schema, enum types, indexes, `get_public_impact_metrics()` RPC, `updated_at` triggers, and showcase RLS policies (with production hardening blueprint).
+* `seed.sql` — Pre-populated East African talent cohorts, partner organisations, opportunities, mentors, verification items, applications, and confirmed outcomes.
 
-### 4. Mentorship Hub
+## Quick Setup (Supabase + Static Hosting)
 
-Talent can send mentorship requests with a specific goal, and mentors can accept, complete, or respond to requests directly on the platform.
-
-### 5. Hiring Pipeline & Impact Measurement
-
-Employers track applicants across hiring stages (Submitted, Under Review, Shortlisted, Interview, Accepted, Rejected) and confirm placement outcomes. Platform impact metrics update in real time as new talent, employers, mentors, applications, and confirmed placements are recorded.
+1. In your Supabase **SQL Editor**, run `schema.sql` first to create all tables, functions, and policies.
+2. Run `seed.sql` second to populate the initial skills taxonomy, partner organisations, talent profiles, opportunities, mentors, and metrics.
+3. Serve `index.html`, `styles.css`, `config.js`, and `app.js` on any static host (such as Netlify, Vercel, or GitHub Pages). If Supabase is unreachable, the app automatically runs in interactive local demo mode using `localStorage`.
 
 ## Project Status
 
-This release is an active **Minimum Viable Product (MVP)** built to validate core talent-to-opportunity matching, mentorship workflows, and real-time outcome tracking.
+This release is an active **Minimum Viable Product (MVP)** built to validate skills-first verification, compliance readiness, explainable role matching, mentorship capacity management, and real-time outcome tracking.
 
 ## Author & Contact
 
 * **Creator:** Abdullahi Abdi Mohamed
-
-* **Location:** Nairobi, Kenya
-
+* **Location:** Dagahaley-Dadaab, Kenya
 * **Email:** bin.abdallah.jr@gmail.com
-
 * **GitHub:** [dev-binabdallah](https://github.com/dev-binabdallah)
 
 ## Proprietary Notice

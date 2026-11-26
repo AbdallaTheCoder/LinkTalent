@@ -33,25 +33,28 @@ DO $$ BEGIN
   CREATE TYPE public.outcome_type AS ENUM ('employment', 'internship', 'fellowship', 'apprenticeship', 'remote_contract');
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
--- 2. TABLES (NORMAL DATABASE - NO auth.users DEPENDENCY)
+-- 2. TABLES (FRICTIONLESS SHOWCASE SCHEMA - NO auth.users DEPENDENCY)
 
--- 2.1 organisations (Employers)
+-- 2.1 organisations (Employers & Institutional Partners)
 CREATE TABLE IF NOT EXISTS public.organisations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL CHECK (char_length(trim(name)) >= 2),
+  organisation_type TEXT NOT NULL DEFAULT 'Employer',
   contact_name TEXT,
   contact_email TEXT,
   sector TEXT,
   location TEXT,
   website TEXT,
   description TEXT,
+  supports_refugee_onboarding BOOLEAN NOT NULL DEFAULT TRUE,
+  payout_methods TEXT[] NOT NULL DEFAULT ARRAY['KES Bank Transfer', 'M-Pesa'],
   is_verified BOOLEAN NOT NULL DEFAULT TRUE,
   is_demo BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 2.2 talent_profiles
+-- 2.2 talent_profiles (Includes Work-Authorization, Payout & Bridging Readiness)
 CREATE TABLE IF NOT EXISTS public.talent_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   full_name TEXT NOT NULL CHECK (char_length(trim(full_name)) >= 2),
@@ -59,7 +62,10 @@ CREATE TABLE IF NOT EXISTS public.talent_profiles (
   headline TEXT,
   summary TEXT,
   location TEXT,
+  cohort_tag TEXT,
   education TEXT,
+  bridging_pathway TEXT,
+  bridging_status TEXT NOT NULL DEFAULT 'in_progress' CHECK (bridging_status IN ('not_needed', 'in_progress', 'certified')),
   years_experience INTEGER NOT NULL DEFAULT 0 CHECK (years_experience >= 0 AND years_experience <= 60),
   sector TEXT,
   languages TEXT[] NOT NULL DEFAULT '{}',
@@ -68,6 +74,25 @@ CREATE TABLE IF NOT EXISTS public.talent_profiles (
   preferred_work_arrangement public.work_arrangement NOT NULL DEFAULT 'hybrid',
   availability TEXT,
   portfolio_url TEXT,
+  work_authorization_status TEXT NOT NULL DEFAULT 'verified_refugee_work_permit' CHECK (
+    work_authorization_status IN (
+      'verified_refugee_work_permit',
+      'kenyan_national_id',
+      'eac_citizen_work_eligible',
+      'remote_contractor_eligible',
+      'onboarding_support_needed'
+    )
+  ),
+  payout_readiness TEXT NOT NULL DEFAULT 'mpesa_and_bank_ready' CHECK (
+    payout_readiness IN (
+      'mpesa_and_bank_ready',
+      'mpesa_ready',
+      'bank_account_ready',
+      'assistance_needed'
+    )
+  ),
+  odpc_consent_granted BOOLEAN NOT NULL DEFAULT TRUE,
+  odpc_consent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   allow_mentor_discovery BOOLEAN NOT NULL DEFAULT TRUE,
   is_demo BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -82,37 +107,48 @@ CREATE TABLE IF NOT EXISTS public.skills (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 2.4 talent_skills
+-- 2.4 talent_skills (Includes Mentor/Evidence Verification Signal)
 CREATE TABLE IF NOT EXISTS public.talent_skills (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   talent_profile_id UUID NOT NULL REFERENCES public.talent_profiles(id) ON DELETE CASCADE,
   skill_id UUID NOT NULL REFERENCES public.skills(id) ON DELETE CASCADE,
   proficiency public.proficiency_level NOT NULL DEFAULT 'intermediate',
   years_used INTEGER NOT NULL DEFAULT 1 CHECK (years_used >= 0 AND years_used <= 50),
+  verification_source TEXT NOT NULL DEFAULT 'self_reported' CHECK (
+    verification_source IN ('self_reported', 'portfolio_backed', 'mentor_endorsed', 'credential_verified')
+  ),
+  endorsed_by TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (talent_profile_id, skill_id)
 );
 
--- 2.5 portfolio_items
+-- 2.5 portfolio_items (Evidence & Bridging Credential Verification)
 CREATE TABLE IF NOT EXISTS public.portfolio_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   talent_profile_id UUID NOT NULL REFERENCES public.talent_profiles(id) ON DELETE CASCADE,
   title TEXT NOT NULL CHECK (char_length(trim(title)) >= 2),
+  evidence_type TEXT NOT NULL DEFAULT 'project_portfolio' CHECK (
+    evidence_type IN ('project_portfolio', 'bridging_credential', 'rpl_assessment', 'work_sample')
+  ),
+  bridging_body TEXT,
   description TEXT NOT NULL CHECK (char_length(trim(description)) >= 10),
   project_url TEXT,
   evidence_status public.evidence_status NOT NULL DEFAULT 'submitted',
+  verified_by_name TEXT,
   review_notes TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- 2.6 opportunities
+-- 2.6 opportunities (Includes Deliverables, Screening & Compliance Support)
 CREATE TABLE IF NOT EXISTS public.opportunities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organisation_id UUID NOT NULL REFERENCES public.organisations(id) ON DELETE CASCADE,
   title TEXT NOT NULL CHECK (char_length(trim(title)) >= 3),
   description TEXT NOT NULL CHECK (char_length(trim(description)) >= 20),
+  deliverables TEXT,
+  screening_criteria TEXT,
   category public.opportunity_category NOT NULL,
   sector TEXT NOT NULL DEFAULT 'General',
   min_experience_years INTEGER NOT NULL DEFAULT 0 CHECK (min_experience_years >= 0 AND min_experience_years <= 50),
@@ -121,6 +157,8 @@ CREATE TABLE IF NOT EXISTS public.opportunities (
   work_arrangement public.work_arrangement NOT NULL DEFAULT 'hybrid',
   duration TEXT,
   compensation TEXT,
+  payout_channel TEXT NOT NULL DEFAULT 'KES Bank / M-Pesa',
+  work_auth_requirement TEXT NOT NULL DEFAULT 'Refugee ID / Work Permit or Remote Contract Eligible',
   application_deadline DATE,
   eligibility_criteria TEXT,
   status public.opportunity_status NOT NULL DEFAULT 'published',
@@ -167,6 +205,7 @@ CREATE TABLE IF NOT EXISTS public.mentor_profiles (
   availability TEXT,
   max_mentees INTEGER NOT NULL DEFAULT 3 CHECK (max_mentees >= 1 AND max_mentees <= 20),
   is_accepting_requests BOOLEAN NOT NULL DEFAULT TRUE,
+  can_verify_credentials BOOLEAN NOT NULL DEFAULT TRUE,
   is_demo BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -204,9 +243,11 @@ CREATE TABLE IF NOT EXISTS public.outcome_records (
 -- 3. INDEXES
 CREATE INDEX IF NOT EXISTS idx_talent_profiles_sector ON public.talent_profiles(sector);
 CREATE INDEX IF NOT EXISTS idx_talent_profiles_location ON public.talent_profiles(location);
+CREATE INDEX IF NOT EXISTS idx_talent_profiles_work_auth ON public.talent_profiles(work_authorization_status);
 CREATE INDEX IF NOT EXISTS idx_skills_name_lower ON public.skills(lower(name));
 CREATE INDEX IF NOT EXISTS idx_talent_skills_talent ON public.talent_skills(talent_profile_id);
 CREATE INDEX IF NOT EXISTS idx_portfolio_items_talent ON public.portfolio_items(talent_profile_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_items_status ON public.portfolio_items(evidence_status);
 CREATE INDEX IF NOT EXISTS idx_opportunities_status_category ON public.opportunities(status, category);
 CREATE INDEX IF NOT EXISTS idx_opportunities_org ON public.opportunities(organisation_id);
 CREATE INDEX IF NOT EXISTS idx_opportunity_skills_opp ON public.opportunity_skills(opportunity_id);
@@ -237,6 +278,8 @@ BEGIN
     'active_mentorship_requests', (SELECT COUNT(*) FROM public.mentorship_requests WHERE status IN ('pending', 'accepted')),
     'completed_mentorships', (SELECT COUNT(*) FROM public.mentorship_requests WHERE status = 'completed'),
     'verified_portfolio_items', (SELECT COUNT(*) FROM public.portfolio_items WHERE evidence_status = 'verified'),
+    'verified_skills_count', (SELECT COUNT(*) FROM public.talent_skills WHERE verification_source <> 'self_reported'),
+    'compliance_ready_talent', (SELECT COUNT(*) FROM public.talent_profiles WHERE work_authorization_status <> 'onboarding_support_needed' AND payout_readiness <> 'assistance_needed'),
     'recorded_employment_outcomes', (SELECT COUNT(*) FROM public.outcome_records WHERE outcome_status = 'confirmed'),
     'accepted_applications', (SELECT COUNT(*) FROM public.applications WHERE status = 'accepted')
   ) INTO result;
@@ -248,7 +291,6 @@ $$;
 GRANT EXECUTE ON FUNCTION public.get_public_impact_metrics() TO anon, authenticated;
 
 -- 5. UPDATED_AT TRIGGERS
-
 CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -277,7 +319,7 @@ BEGIN
   END LOOP;
 END $$;
 
--- 6. OPEN HACKATHON SHOWCASE ACCESS (NO LOGIN REQUIRED)
+-- 6. HACKATHON SHOWCASE ACCESS (OPEN FOR LIVE JUDGE TESTING) & PRODUCTION RLS NOTE
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO anon, authenticated;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
