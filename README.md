@@ -1,4 +1,4 @@
-# TalentLink
+# TalentLink 
 
 TalentLink is a skills-first talent marketplace connecting skilled refugees and host-community professionals in Kenya and East Africa to formal employment, internships, fellowships, apprenticeships, remote work, and industry mentorship.
 
@@ -26,12 +26,12 @@ Registered talent profiles appear in the Talent Pool with their skills, experien
 
 Every application and role recommendation is scored from 0% to 100% across four weighted criteria:
 
-| Criterion | Weight | How It Works |
-| ----- | ----- | ----- |
-| Skills & Proficiency | 55% | Evaluates candidate skills against required and optional role skills, weighted by proficiency level. |
-| Sector Alignment | 20% | Measures alignment between the candidate's sector background and the opportunity's sector. |
-| Experience Fit | 15% | Compares candidate years of experience against the role's minimum experience requirement. |
-| Work Arrangement | 10% | Matches remote, hybrid, and onsite preferences between candidate and employer. |
+| Criterion | Weight | How It Works | 
+| ----- | ----- | ----- | 
+| Skills & Proficiency | 55% | Evaluates candidate skills against required and optional role skills, weighted by proficiency level. | 
+| Sector Alignment | 20% | Measures alignment between the candidate's sector background and the opportunity's sector. | 
+| Experience Fit | 15% | Compares candidate years of experience against the role's minimum experience requirement. | 
+| Work Arrangement | 10% | Matches remote, hybrid, and onsite preferences between candidate and employer. | 
 
 ### 4. Mentorship Hub
 
@@ -41,11 +41,18 @@ Talent can send mentorship requests with a specific goal, and mentors can accept
 
 Employers track applicants across hiring stages (Submitted, Under Review, Shortlisted, Interview, Accepted, Rejected) and confirm placement outcomes. Platform impact metrics update in real time as new talent, employers, mentors, applications, and confirmed placements are recorded.
 
+## Project Status
+
+This release is an active **Minimum Viable Product (MVP)** built to validate core talent-to-opportunity matching, mentorship workflows, and real-time outcome tracking.
+
 ## Author & Contact
 
 * **Creator:** Abdullahi Abdi Mohamed
+
 * **Location:** Nairobi, Kenya
+
 * **Email:** bin.abdallah.jr@gmail.com
+
 * **GitHub:** [dev-binabdallah](https://github.com/dev-binabdallah)
 
 ## Proprietary Notice
