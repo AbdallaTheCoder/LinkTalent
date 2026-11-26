@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TalentLink - Connecting Skilled Talent to Opportunities, Experience and Professional Networks." />
+  <title>TalentLink</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="TalentLink Home">
+        <span class="brand-mark" aria-hidden="true">TL</span>
+        <span class="brand-text">
+          <strong>Talent</strong><span>Link</span>
+        </span>
+      </a>
+
+      <button type="button" id="public-menu-toggle" class="icon-btn mobile-only" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="public-nav">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <nav id="public-nav" class="public-nav" aria-label="Primary navigation">
+        <a href="#opportunities-section">Opportunities</a>
+        <a href="#talent-section">Talent Pool</a>
+        <a href="#mentorship-section">Mentors</a>
+        <a href="#pipeline-section">Pipeline &amp; Outcomes</a>
+        <a href="#impact-section">Impact</a>
+        <div class="nav-actions">
+          <button type="button" class="btn btn-teal btn-sm" data-open-intake="talent">Join as Talent</button>
+          <button type="button" class="btn btn-primary btn-sm" data-open-intake="employer">Hire Skilled Talent</button>
+          <button type="button" class="btn btn-outline btn-sm" data-open-intake="mentor">Become a Mentor</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- 1. Hero Section -->
+    <section id="top" class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+    
+          <h1>Your Skills Deserve an Opportunity.</h1>
+          <p>TalentLink is a live, end-to-end demonstration of a talent marketplace connecting skilled individuals to opportunities, experience, and professional networks.</p>
+          <div class="hero-cta-primary">
+            <button type="button" class="btn btn-teal btn-lg" data-open-intake="talent">Join as Talent</button>
+            <button type="button" class="btn btn-primary btn-lg" data-open-intake="employer">Hire Skilled Talent</button>
+            <button type="button" class="btn btn-outline btn-lg" data-open-intake="mentor">Become a Mentor</button>
+          </div>
+          <div class="hero-cta-secondary">
+            <a href="#opportunities-section" class="btn btn-ghost btn-sm">Browse Opportunities &darr;</a>
+            <a href="#talent-section" class="btn btn-ghost btn-sm">Explore Talent Pool &darr;</a>
+            <a href="#pipeline-section" class="btn btn-ghost btn-sm">Manage Pipeline &darr;</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Live end-to-end showcase">
+          <h2 class="panel-title">Instant Two-Way Demonstration</h2>
+          <ul class="pathway-list">
+            <li>
+              <span class="pathway-num">01</span>
+              <div>
+                <strong>Join as Talent</strong>
+                <p>Enter your profile, experience, and skills - immediately appear in the Talent Pool and apply with live match scoring.</p>
+              </div>
+            </li>
+            <li>
+              <span class="pathway-num">02</span>
+              <div>
+                <strong>Hire Skilled Talent</strong>
+                <p>Enter organisation details and publish a role - immediately visible to Talent for matching and applications.</p>
+              </div>
+            </li>
+            <li>
+              <span class="pathway-num">03</span>
+              <div>
+                <strong>Become a Mentor</strong>
+                <p>Share your expertise and availability - immediately open for Talent mentorship requests.</p>
+              </div>
+            </li>
+            <li>
+              <span class="pathway-num">04</span>
+              <div>
+                <strong>Live Pipeline &amp; Impact</strong>
+                <p>Shortlist applicants, respond to mentorships, confirm outcomes, and watch database metrics update live.</p>
+              </div>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- 2. Published Opportunities (Employer -> Talent End) -->
+    <section class="section" id="opportunities-section">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">Opportunity Marketplace</span>
+            <h2>Published Opportunities</h2>
+            <p>Employers can post new opportunities and Talent can apply immediately. All applications are scored and ranked by match percentage.</p>
+          </div>
+          <div class="inline-filters">
+            <input type="search" id="opp-search" class="input" placeholder="Search title, location or skill..." aria-label="Search opportunities" />
+            <select id="opp-category" class="input" aria-label="Filter by category">
+              <option value="">All Categories</option>
+              <option value="employment">Employment</option>
+              <option value="internship">Internship</option>
+              <option value="fellowship">Fellowship</option>
+              <option value="apprenticeship">Apprenticeship</option>
+              <option value="remote_work">Remote Work</option>
+            </select>
+            <button type="button" class="btn btn-primary btn-sm" data-open-intake="employer">+ Post Role</button>
+          </div>
+        </div>
+
+        <div id="opportunities-grid" class="grid-3">
+          <div class="loading-state">Loading opportunities...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Talent Pool (Talent -> Employer & Mentor End) -->
+    <section class="section section-muted" id="talent-section">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">For Employers &amp; Mentors</span>
+            <h2>Registered Talent Pool</h2>
+            <p>Talent profiles added via "Join as Talent" appear here immediately with their skills, experience, and portfolio links.</p>
+          </div>
+          <div class="inline-filters">
+            <input type="search" id="talent-search" class="input" placeholder="Search talent name, skill or location..." aria-label="Search talent" />
+            <button type="button" class="btn btn-teal btn-sm" data-open-intake="talent">+ Join as Talent</button>
+          </div>
+        </div>
+
+        <div id="talent-grid" class="grid-2">
+          <div class="loading-state">Loading talent profiles...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Mentorship Hub (Mentor <-> Talent End) -->
+    <section class="section" id="mentorship-section">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label">Professional Networks</span>
+            <h2>Available Mentors &amp; Requests</h2>
+            <p>Mentors registered via "Become a Mentor" appear here immediately. Talent can send mentorship requests in one click.</p>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" data-open-intake="mentor">+ Become a Mentor</button>
+        </div>
+
+        <div id="mentors-grid" class="grid-2" style="margin-bottom: 28px;">
+          <div class="loading-state">Loading mentors...</div>
+        </div>
+
+        <div class="card">
+          <h3>Active Mentorship Requests</h3>
+          <p class="muted-note" style="margin-bottom: 14px;">Mentors can accept, complete, or respond to requests directly below.</p>
+          <div id="mentorship-requests-table" class="table-wrap">
+            <div class="loading-state">Loading mentorship requests...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Applications Pipeline & Outcomes -->
+    <section class="section section-muted" id="pipeline-section">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-label">Employer &amp; Admin View</span>
+          <h2>Applications Pipeline &amp; Confirmed Outcomes</h2>
+          <p>Review applications submitted by Talent, update hiring stages, and record confirmed placements.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 22px;">
+          <h3>Submitted Applications</h3>
+          <div id="applications-table" class="table-wrap" style="margin-top: 12px;">
+            <div class="loading-state">Loading applications...</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Confirmed Placement Outcomes</h3>
+          <div id="outcomes-table" class="table-wrap" style="margin-top: 12px;">
+            <div class="loading-state">Loading outcomes...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Live Impact Statistics -->
+    <section class="section section-navy" id="impact-section">
+      <div class="container">
+        <div class="section-header section-header-row">
+          <div>
+            <span class="section-label section-label-light">Real-Time Metrics</span>
+            <h2>Transparent Impact Measurement</h2>
+            <p>Every submission from Talent, Employers, and Mentors updates these database counts immediately.</p>
+          </div>
+          <button type="button" id="refresh-impact-btn" class="btn btn-outline btn-light-outline btn-sm">Refresh Metrics</button>
+        </div>
+
+        <div id="impact-container">
+          <div class="loading-state loading-light">Loading live metrics...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA Section -->
+    <section class="section section-muted">
+      <div class="container cta-box">
+        <div class="btn-row btn-row-center">
+          <button type="button" class="btn btn-teal btn-lg" data-open-intake="talent">Join as Talent</button>
+          <button type="button" class="btn btn-primary btn-lg" data-open-intake="employer">Hire Skilled Talent</button>
+          <button type="button" class="btn btn-outline btn-lg" data-open-intake="mentor">Become a Mentor</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong class="footer-brand">TalentLink</strong>
+        <p>Connecting Skilled Talent to Opportunities, Experience and Professional Networks.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- INTAKE MODAL (TALENT / EMPLOYER / MENTOR) -->
+  <div id="intake-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="intake-modal-title">
+    <div class="modal-backdrop" data-modal-close="intake-modal"></div>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h2 id="intake-modal-title">Join TalentLink</h2>
+        <button type="button" class="icon-btn" data-modal-close="intake-modal" aria-label="Close dialog">&times;</button>
+      </div>
+      <div id="intake-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- DETAIL / ACTION MODAL -->
+  <div id="detail-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+    <div class="modal-backdrop" data-modal-close="detail-modal"></div>
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h2 id="detail-modal-title">Details</h2>
+        <button type="button" class="icon-btn" data-modal-close="detail-modal" aria-label="Close dialog">&times;</button>
+      </div>
+      <div id="detail-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
