@@ -794,16 +794,7 @@ function openIntakeModal(role) {
   const bodyEl = document.getElementById("intake-modal-body");
   if (!titleEl || !bodyEl) return;
 
-  const skillChips = state.skills
-    .map(
-      (s) => `
-        <label class="checkbox-chip">
-          <input type="checkbox" name="intake-skill" value="${escapeHtml(s.id)}" />
-          <span>${escapeHtml(s.name)}</span>
-        </label>
-      `
-    )
-    .join("");
+
 
   if (role === "talent") {
     titleEl.textContent = "Join as Talent - Enter Your Details";
@@ -864,8 +855,8 @@ function openIntakeModal(role) {
           <textarea id="it-summary" class="input" required placeholder="Briefly describe your skills, projects, and experience..."></textarea>
         </div>
         <div class="form-group">
-          <label>Select Your Skills</label>
-          <div class="checkbox-grid">${skillChips}</div>
+          <label for="it-skills">Your Skills (comma-separated) *</label>
+          <input id="it-skills" class="input" type="text" required placeholder="e.g., Clinical Nursing, Patient Triage, JavaScript, Accounting" />
         </div>
         <div class="btn-row">
           <button type="submit" class="btn btn-teal">Save Talent Profile</button>
@@ -934,8 +925,8 @@ function openIntakeModal(role) {
           <textarea id="ie-desc" class="input" required minlength="20" placeholder="Describe responsibilities, tools, and impact..."></textarea>
         </div>
         <div class="form-group">
-          <label>Required Skills</label>
-          <div class="checkbox-grid">${skillChips}</div>
+          <label for="ie-skills">Required Skills (comma-separated) *</label>
+          <input id="ie-skills" class="input" type="text" required placeholder="e.g., Midwifery, Ward Management, SQL, Solar PV" />
         </div>
         <div class="btn-row">
           <button type="submit" class="btn btn-primary">Publish Opportunity</button>
@@ -1167,8 +1158,63 @@ function handleOpenMentorRequest(mentorId) {
 
 // MUTATIONS (SAVES TO SUPABASE OR LOCAL DEMO STORE & UPDATES ALL VIEWS)
 
+async function ensureSkillIdsSupabase(skillNames, category) {
+  const supabase = getSupabase();
+  const uniqueNames = [];
+  const seen = new Set();
+  for (const raw of skillNames) {
+    const clean = raw.trim();
+    if (!clean) continue;
+    const key = clean.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      uniqueNames.push(clean);
+    }
+  }
+  if (!uniqueNames.length) return [];
+
+  const existingMap = new Map(state.skills.map((s) => [s.name.toLowerCase(), s.id]));
+  const missing = uniqueNames.filter((n) => !existingMap.has(n.toLowerCase()));
+
+  if (missing.length) {
+    const rows = missing.map((name) => ({ name, category: category || "General" }));
+    const { error: insertErr } = await supabase.from("skills").upsert(rows, { onConflict: "name", ignoreDuplicates: true });
+    if (insertErr) {
+      console.warn("Skill insert warning:", insertErr.message);
+    }
+    const { data: refreshed } = await supabase.from("skills").select("id, name, category");
+    if (refreshed) {
+      state.skills = refreshed;
+      for (const s of refreshed) existingMap.set(s.name.toLowerCase(), s.id);
+    }
+  }
+
+  return uniqueNames.map((n) => existingMap.get(n.toLowerCase())).filter(Boolean);
+}
+
+function ensureSkillIdsLocal(local, skillNames, category) {
+  const existingMap = new Map(local.skills.map((s) => [s.name.toLowerCase(), s]));
+  const result = [];
+  const seen = new Set();
+  for (const raw of skillNames) {
+    const clean = raw.trim();
+    if (!clean) continue;
+    const key = clean.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    let skill = existingMap.get(key);
+    if (!skill) {
+      skill = { id: generateId(), name: clean, category: category || "General" };
+      local.skills.push(skill);
+      existingMap.set(key, skill);
+    }
+    result.push(skill);
+  }
+  return result;
+}
+
 async function handleTalentIntakeSubmit(form) {
-  const checkedSkillIds = Array.from(form.querySelectorAll('input[name="intake-skill"]:checked')).map((cb) => cb.value);
+  const skillNames = parseCsvList(document.getElementById("it-skills").value);
   const payload = {
     full_name: document.getElementById("it-name").value.trim(),
     email: document.getElementById("it-email").value.trim() || null,
@@ -1192,9 +1238,10 @@ async function handleTalentIntakeSubmit(form) {
       showToast(error.message, "error");
       return;
     }
-    if (checkedSkillIds.length) {
+    const skillIds = await ensureSkillIdsSupabase(skillNames, payload.sector);
+    if (skillIds.length) {
       await supabase.from("talent_skills").insert(
-        checkedSkillIds.map((skillId) => ({
+        skillIds.map((skillId) => ({
           talent_profile_id: created.id,
           skill_id: skillId,
           proficiency: "intermediate",
@@ -1204,15 +1251,15 @@ async function handleTalentIntakeSubmit(form) {
     }
   } else {
     const local = loadLocalStore();
-    const skillMap = new Map(local.skills.map((s) => [s.id, s]));
+    const resolvedSkills = ensureSkillIdsLocal(local, skillNames, payload.sector);
     const newTalent = {
       id: generateId(),
       ...payload,
-      talent_skills: checkedSkillIds.map((id) => ({
-        skill_id: id,
+      talent_skills: resolvedSkills.map((sk) => ({
+        skill_id: sk.id,
         proficiency: "intermediate",
         years_used: Math.max(1, payload.years_experience),
-        skills: skillMap.get(id),
+        skills: sk,
       })),
       portfolio_items: [],
     };
@@ -1227,7 +1274,7 @@ async function handleTalentIntakeSubmit(form) {
 }
 
 async function handleEmployerIntakeSubmit(form) {
-  const checkedSkillIds = Array.from(form.querySelectorAll('input[name="intake-skill"]:checked')).map((cb) => cb.value);
+  const skillNames = parseCsvList(document.getElementById("ie-skills").value);
   const orgPayload = {
     name: document.getElementById("ie-org-name").value.trim(),
     contact_name: document.getElementById("ie-contact-name").value.trim(),
@@ -1264,21 +1311,22 @@ async function handleEmployerIntakeSubmit(form) {
       showToast(oppErr.message, "error");
       return;
     }
-    if (checkedSkillIds.length) {
+    const skillIds = await ensureSkillIdsSupabase(skillNames, oppPayload.sector);
+    if (skillIds.length) {
       await supabase.from("opportunity_skills").insert(
-        checkedSkillIds.map((skillId) => ({ opportunity_id: opp.id, skill_id: skillId, is_required: true }))
+        skillIds.map((skillId) => ({ opportunity_id: opp.id, skill_id: skillId, is_required: true }))
       );
     }
   } else {
     const local = loadLocalStore();
-    const skillMap = new Map(local.skills.map((s) => [s.id, s]));
+    const resolvedSkills = ensureSkillIdsLocal(local, skillNames, oppPayload.sector);
     const newOrg = { id: generateId(), ...orgPayload };
     const newOpp = {
       id: generateId(),
       organisation_id: newOrg.id,
       organisations: newOrg,
       ...oppPayload,
-      opportunity_skills: checkedSkillIds.map((id) => ({ skill_id: id, is_required: true, skills: skillMap.get(id) })),
+      opportunity_skills: resolvedSkills.map((sk) => ({ skill_id: sk.id, is_required: true, skills: sk })),
     };
     local.organisations.unshift(newOrg);
     local.opportunities.unshift(newOpp);
